@@ -64,21 +64,16 @@ class _ViewTaskPageState extends State<ViewTaskPage> {
             borderRadius: BorderRadius.circular(20),
             child: Container(
               height: 500,
-              padding: EdgeInsets.all(8.sp),
+              padding: EdgeInsets.all(16.0),
               decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  colors: [
-                    Colors.blueAccent.withOpacity(0.7),
-                    Colors.purpleAccent.withOpacity(0.7)
-                  ],
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                ),
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(20),
                 boxShadow: [
                   BoxShadow(
-                    color: Colors.black26,
-                    blurRadius: 10,
-                    offset: Offset(0, 4),
+                    color: Colors.grey.withOpacity(0.5),
+                    spreadRadius: 2,
+                    blurRadius: 7,
+                    offset: Offset(0, 3),
                   ),
                 ],
               ),
@@ -94,27 +89,18 @@ class _ViewTaskPageState extends State<ViewTaskPage> {
                   } else {
                     List<ViewTaskModel> tasks = snapshot.data!;
                     return ListView.builder(
-                      padding: EdgeInsets.all(0),
-                      shrinkWrap: true,
-                      physics: AlwaysScrollableScrollPhysics(),
+                      padding: EdgeInsets.zero,
                       itemCount: tasks.length,
                       itemBuilder: (context, index) {
                         ViewTaskModel task = tasks[index];
-                        return Card(
-                          margin: EdgeInsets.symmetric(
-                              vertical: 8.0, horizontal: 12.0),
-                          elevation: 4.0,
-                          shape: RoundedRectangleBorder(
+                        return Container(
+                          margin: EdgeInsets.symmetric(vertical: 8.0),
+                          decoration: BoxDecoration(
+                            color: Colors.grey.shade100,
                             borderRadius: BorderRadius.circular(15.0),
                           ),
                           child: ListTile(
                             contentPadding: EdgeInsets.all(16.0),
-                            tileColor: index.isEven
-                                ? Colors.cyanAccent.withOpacity(0.8)
-                                : Colors.orangeAccent.withOpacity(0.8),
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(15.0),
-                            ),
                             title: Text(
                               task.taskName ?? '',
                               style: TextStyle(
@@ -152,8 +138,7 @@ class _ViewTaskPageState extends State<ViewTaskPage> {
                                 ),
                               ],
                             ),
-                            trailing: Icon(Icons.arrow_forward_ios,
-                                size: 16.0, color: Colors.black54),
+                            trailing: Icon(Icons.arrow_forward_ios, size: 16.0, color: Colors.black54),
                             onTap: () {
                               Get.to(() => TaskDetailPage(task: task));
                             },
@@ -167,6 +152,7 @@ class _ViewTaskPageState extends State<ViewTaskPage> {
             ),
           ),
         ),
+
       ),
     );
   }

@@ -83,7 +83,7 @@ class AddTaskController extends GetxController {
         'amount': amount.value.text
       });
 
-      showToastMsg('Task added successfully');
+      showToastMsg('Expense added successfully');
       Get.to(const HomePage(), transition: Transition.cupertino);
     } catch (e) {
       showToastMsg('Failed to add task: $e');
@@ -114,18 +114,80 @@ class AddTaskController extends GetxController {
     );
   }
 
+  var totalAmt = ''.obs;
   Future<List<ViewTaskModel>> fetchAllTasks() async {
     try {
       QuerySnapshot querySnapshot =
           await FirebaseFirestore.instance.collection('task').get();
 
-      return querySnapshot.docs
+      List<ViewTaskModel> tasks = querySnapshot.docs
           .map((doc) =>
               ViewTaskModel.fromJson(doc.data() as Map<String, dynamic>))
           .toList();
+
+      // Calculate total amount
+      double total = calculateTotalAmount(tasks);
+      totalAmt.value = total.toStringAsFixed(2); // Store total as a string
+
+      return tasks;
     } catch (e) {
       showToastMsg('Failed to fetch tasks: $e');
       return [];
+    }
+  }
+
+  double calculateTotalAmount(List<ViewTaskModel> tasks) {
+    double total = 0.0;
+    tasks.forEach((task) {
+      if (task.amount != null && task.amount!.isNotEmpty) {
+        total += double.parse(task.amount!);
+      }
+    });
+    return total;
+  }
+
+  Future<void> setTarget() async {
+    try {
+      isLoading.value = true;
+      CollectionReference targetCollection =
+          FirebaseFirestore.instance.collection('target');
+
+      // Generate a unique document reference with a unique ID
+      DocumentReference targetDoc = targetCollection.doc();
+
+      downloadUrl.value = (await uploadImage(document.value.text))!;
+      await targetDoc.set({
+        'id': targetDoc.id, // Add the unique ID to the target data
+        'targetName': taskName.value.text,
+        'targetDescription': taskDescription.value.text,
+        'targetStartDate': taskStartDate.value.text,
+        'targetEndDate': taskEndDate.value.text,
+        'document': downloadUrl.value,
+        'amount': amount.value.text
+      });
+
+      showToastMsg('Target added successfully');
+      Get.to(const HomePage(), transition: Transition.cupertino);
+    } catch (e) {
+      showToastMsg('Failed to add target: $e');
+    } finally {
+      isLoading.value = false;
+    }
+  }
+
+  var targetAmt = ''.obs;
+  Future<void> fetchTarget() async {
+    try {
+      QuerySnapshot querySnapshot =
+          await FirebaseFirestore.instance.collection('target').get();
+
+      List<ViewTaskModel> target = querySnapshot.docs
+          .map((doc) =>
+              ViewTaskModel.fromJson(doc.data() as Map<String, dynamic>))
+          .toList();
+      targetAmt.value = target.first.amount!;
+    } catch (e) {
+      showToastMsg('Failed to fetch tasks: $e');
     }
   }
 }

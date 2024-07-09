@@ -254,7 +254,7 @@ class _AddTaskPageState extends State<AddTaskPage> {
                       labelTxt: "Amount",
                       hintTxt: "Enter amount",
                       controller: addTaskController.amount.value,
-                      keyboardType: TextInputType.text,
+                      keyboardType: TextInputType.number,
                     ),
                     SizedBox(
                       height: 10.sp,

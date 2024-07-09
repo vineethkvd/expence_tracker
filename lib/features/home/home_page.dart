@@ -1,3 +1,4 @@
+import 'package:expence_tracker/features/add_task/view/set_target.dart';
 import 'package:expence_tracker/features/profile/view/profile_view.dart';
 import 'package:expence_tracker/features/register/view/registeration_page.dart';
 import 'package:expence_tracker/features/slider/view/widget/slider_widget.dart';
@@ -10,6 +11,7 @@ import 'package:get/utils.dart';
 
 import '../../../core/utils/configs/styles/colors.dart';
 import '../../../core/utils/shared/constants/assets_pathes.dart';
+import '../add_task/controller/add_task_controller.dart';
 import '../add_task/view/add_task_page.dart';
 import '../add_task/view/view_task_page.dart';
 
@@ -21,6 +23,12 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  final AddTaskController controller = AddTaskController();
+  void initState() {
+    super.initState();
+    controller.fetchAllTasks();
+    controller.fetchTarget();
+  }
   @override
   Widget build(BuildContext context) {
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.light);
@@ -117,15 +125,15 @@ class _HomePageState extends State<HomePage> {
                                       width: Get.width,
                                       color: Color(0xff3e8e41),
                                       child: Center(
-                                        child: Text(
-                                          '₹ 1000',
+                                        child: Obx(() => Text(
+                                          '₹ ${controller.targetAmt.value}',
                                           textAlign: TextAlign.center,
                                           style: TextStyle(
                                             color: Colors.white,
                                             fontSize: 14.sp,
                                             fontFamily: "poppinsSemibold",
                                           ),
-                                        ),
+                                        ),)
                                       ),
                                     ),
                                   ],
@@ -183,15 +191,15 @@ class _HomePageState extends State<HomePage> {
                                       width: Get.width,
                                       color: Color(0xffcc0000),
                                       child: Center(
-                                        child: Text(
-                                          '₹ 1000',
+                                        child: Obx(() => Text(
+                                          '₹ ${controller.totalAmt.value}',
                                           textAlign: TextAlign.center,
                                           style: TextStyle(
                                             color: Colors.white,
                                             fontSize: 14.sp,
                                             fontFamily: "poppinsSemibold",
                                           ),
-                                        ),
+                                        ),),
                                       ),
                                     ),
                                   ],
@@ -220,7 +228,9 @@ class _HomePageState extends State<HomePage> {
                             border: Border.all(color: Colors.black12),
                           ),
                           child: InkWell(
-                            onTap: () async {},
+                            onTap: () async {
+                              Get.to(SetTargetPage(),transition: Transition.native);
+                            },
                             child: Container(
                               height: 100,
                               alignment: Alignment.center,
@@ -231,9 +241,9 @@ class _HomePageState extends State<HomePage> {
                                 mainAxisSize: MainAxisSize.max,
                                 children: [
                                   Icon(
-                                    Icons.arrow_circle_right,
+                                    Icons.man,
                                     color: Colors.white,
-                                    size: 20,
+                                    size: 30,
                                   ),
                                   SizedBox(width: 10),
                                   Text(
